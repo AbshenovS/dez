@@ -1,0 +1,29 @@
+# To run Postgres and PgAdmin
+docker-compose up
+
+# To build the image
+docker build -t taxi_ingest:v001 .
+
+# To fill the data into running Postgres
+docker run -it \
+    --network=2_docker_sql_default \
+    taxi_ingest:v001 \
+        --user=root \
+        --password=root \
+        --host=pgdatabase \
+        --port=5432 \
+        --db=green_trip \  
+        --table_name=trip_data \
+        --url=wget https://github.com/DataTalksClub/nyc-tlc-data/releases/download/green/green_tripdata_2019-01.csv.gz
+
+# To fill the zones data into Postgres
+docker run -it \
+    --network=2_docker_sql_default \
+    taxi_ingest:v001 \
+        --user=root \
+        --password=root \
+        --host=pgdatabase \
+        --port=5432 \
+        --db=green_trip \  
+        --table_name=zones \
+        --url=https://s3.amazonaws.com/nyc-tlc/misc/taxi+_zone_lookup.csv
